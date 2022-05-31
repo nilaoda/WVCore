@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>library</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<!--<PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*" />-->
+		<PackageReference Include="BouncyCastle.NetCore" Version="1.8.10" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="protobuf-net" Version="3.1.4" />
+	</ItemGroup>
+</Project>
