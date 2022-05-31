@@ -1,2 +1,2 @@
 # WVCore
-.NET6 Widevine Clinet
+.NET6 Widevine Client
