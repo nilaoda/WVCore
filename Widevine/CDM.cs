@@ -48,7 +48,7 @@ namespace WVCore.Widevine
             }
         }
 
-        public static string OpenSession(string initDataB64, string deviceName, bool offline = false, bool raw = false)
+        public static string OpenSession(string initDataB64, string deviceName, bool offline = false, bool raw = false, byte[] mySessionId = null)
         {
             byte[] initData = CheckPSSH(initDataB64);
 
@@ -56,24 +56,32 @@ namespace WVCore.Widevine
 
             byte[] sessionId = new byte[16];
 
-            if (device.IsAndroid)
+            if (mySessionId != null)
             {
-                string randHex = "";
-
-                Random rand = new Random();
-                string choice = "ABCDEF0123456789";
-                for (int i = 0; i < 16; i++)
-                    randHex += choice[rand.Next(16)];
-
-                string counter = "01";
-                string rest = "00000000000000";
-                sessionId = Encoding.ASCII.GetBytes(randHex + counter + rest);
+                sessionId = mySessionId;
             }
             else
             {
-                Random rand = new Random();
-                rand.NextBytes(sessionId);
+                if (device.IsAndroid)
+                {
+                    string randHex = "";
+
+                    Random rand = new Random();
+                    string choice = "ABCDEF0123456789";
+                    for (int i = 0; i < 16; i++)
+                        randHex += choice[rand.Next(16)];
+
+                    string counter = "01";
+                    string rest = "00000000000000";
+                    sessionId = Encoding.ASCII.GetBytes(randHex + counter + rest);
+                }
+                else
+                {
+                    Random rand = new Random();
+                    rand.NextBytes(sessionId);
+                }
             }
+            
 
             Session session;
             WidevineCencHeader parsedInitData = ParseInitData(initData);
@@ -339,6 +347,11 @@ namespace WVCore.Widevine
             if (session.LicenseRequest == null)
             {
                 throw new Exception("Generate a license request first");
+            }
+
+            if (session.ContentKeys.Count > 0)
+            {
+                return; //已经调用过
             }
 
             SignedLicense signedLicense;
