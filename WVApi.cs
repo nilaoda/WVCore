@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProtoBuf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,6 +62,16 @@ namespace WVCore
 
         public bool ProvideLicense(string licenseB64)
         {
+            CDM.ProvideLicense(SessionId, Convert.FromBase64String(licenseB64));
+            return true;
+        }
+
+        
+        public bool ProvideLicense(string licenseB64, string challengeB64)
+        {
+            var signedLicenseRequest = Serializer.Deserialize<SignedLicenseRequest>(new MemoryStream(Convert.FromBase64String(challengeB64)));
+            var sessionId = signedLicenseRequest.Msg.ContentId.CencId.RequestId;
+            SessionId = BitConverter.ToString(sessionId).Replace("-", "");
             CDM.ProvideLicense(SessionId, Convert.FromBase64String(licenseB64));
             return true;
         }
