@@ -121,15 +121,22 @@ namespace WVCore.Widevine
             {
                 try
                 {
-                    //needed for HBO Max
-
-                    PSSHBox psshBox = PSSHBox.FromByteArray(initData);
-                    cencHeader = Serializer.Deserialize<WidevineCencHeader>(new MemoryStream(psshBox.Data));
+                    cencHeader = Serializer.Deserialize<WidevineCencHeader>(new MemoryStream(initData));
                 }
-                catch
+                catch (Exception)
                 {
-                    //Logger.Print("Unable to parse, unsupported init data format");
-                    return null;
+                    try
+                    {
+                        //needed for HBO Max
+
+                        PSSHBox psshBox = PSSHBox.FromByteArray(initData);
+                        cencHeader = Serializer.Deserialize<WidevineCencHeader>(new MemoryStream(psshBox.Data));
+                    }
+                    catch
+                    {
+                        //Logger.Print("Unable to parse, unsupported init data format");
+                        return null;
+                    }
                 }
             }
 
