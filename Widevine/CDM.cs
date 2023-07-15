@@ -1,6 +1,7 @@
 ﻿using ProtoBuf;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -225,6 +226,8 @@ namespace WVCore.Widevine
             //Logger.Debug("Building license request");
 
             dynamic licenseRequest;
+            var requestTime = uint.Parse((DateTime.Now - DateTime.UnixEpoch).TotalSeconds.ToString()
+                .Split(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)[0]);
 
             if (session.ParsedInitData != null)
             {
@@ -236,7 +239,7 @@ namespace WVCore.Widevine
                         Type = LicenseRequest.RequestType.New,
                         KeyControlNonce = 1093602366,
                         ProtocolVersion = ProtocolVersion.Current,
-                        RequestTime = uint.Parse((DateTime.Now - DateTime.UnixEpoch).TotalSeconds.ToString().Split(".")[0]),
+                        RequestTime = requestTime,
                         ContentId = new LicenseRequest.ContentIdentification
                         {
                             CencId = new LicenseRequest.ContentIdentification.Cenc
@@ -259,7 +262,7 @@ namespace WVCore.Widevine
                         Type = LicenseRequestRaw.RequestType.New,
                         KeyControlNonce = 1093602366,
                         ProtocolVersion = ProtocolVersion.Current,
-                        RequestTime = uint.Parse((DateTime.Now - DateTime.UnixEpoch).TotalSeconds.ToString().Split(".")[0]),
+                        RequestTime = requestTime,
                         ContentId = new LicenseRequestRaw.ContentIdentification
                         {
                             CencId = new LicenseRequestRaw.ContentIdentification.Cenc

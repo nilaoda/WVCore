@@ -53,10 +53,13 @@ namespace WVCore
             CDM.Devices = Devices;
         }
 
-        public byte[] GetChallenge(string initDataB64, string certDataB64, bool offline = false, bool raw = false)
+        public byte[] GetChallenge(string initDataB64, string certDataB64 = null, bool offline = false, bool raw = false)
         {
             SessionId = CDM.OpenSession(initDataB64, Devices.Keys.First(), offline, raw);
-            CDM.SetServiceCertificate(SessionId, Convert.FromBase64String(certDataB64));
+            if (!string.IsNullOrEmpty(certDataB64))
+            {
+                CDM.SetServiceCertificate(SessionId, Convert.FromBase64String(certDataB64)); 
+            }
             return CDM.GetLicenseRequest(SessionId);
         }
 
